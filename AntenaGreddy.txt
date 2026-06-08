@@ -1,0 +1,71 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Scanner;
+
+public class Main
+{
+// Método principal que ejecuta la estrategia Greedy
+    public static void colocarAntenas(int[] casas, int r) {
+        if (casas == null || casas.length == 0) {
+            System.out.println("No hay casas para cubrir.");
+            return;
+        }
+
+        // 1. Ordenar las posiciones de las casas de menor a mayor
+        Arrays.sort(casas);
+
+        List<Integer> posicionesAntenas = new ArrayList<>();
+        int n = casas.length;
+        int i = 0;
+
+        System.out.println("--- Detalles de la colocación ---");
+
+        // 2. Iterar sobre las casas para asignar las antenas
+        while (i < n) {
+            // La casa actual en la posición casas[i] no está cubierta.
+            // Colocamos la antena lo más a la derecha posible:
+            int posicionAntena = casas[i] + r;
+            posicionesAntenas.add(posicionAntena);
+            
+            System.out.printf("Casa descubierta en %d -> Antena colocada en %d (cubre el intervalo [%d, %d])\n",
+                              casas[i], posicionAntena, posicionAntena - r, posicionAntena + r);
+
+            // 3. Ignorar todas las casas que ya caen dentro de la cobertura de esta antena.
+            // El límite de cobertura hacia la derecha es posicionAntena + r
+            int limiteCobertura = posicionAntena + r;
+            
+            while (i < n && casas[i] <= limiteCobertura) {
+                i++; // Avanzamos al siguiente índice si la casa está cubierta
+            }
+        }
+
+        // 4. Mostrar los resultados finales
+        System.out.println("---------------------------------");
+        System.out.println("Posiciones exactas de las antenas: " + posicionesAntenas);
+        System.out.println("Cantidad TOTAL de antenas utilizadas: " + posicionesAntenas.size());
+    }
+
+    public static void main(String[] args) {
+        // Posiciones de las casas sobre la línea recta
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Cuantas casas hay");
+        int c = 0;
+	    c= scanner.nextInt();
+	    
+        int[] casas = new int[c];
+        System.out.println("Coloque las Posiciones de las casas");
+        for (int i=0;i<c ;i++ ){
+            casas[i]=scanner.nextInt();
+        } 
+        // Rango de cobertura de cada antena (R)
+        System.out.println("Cobertura de las antenas");
+        int r = scanner.nextInt();;
+
+        System.out.println("Posiciones de las casas: " + Arrays.toString(casas));
+        System.out.println("Rango de cobertura (R): " + r + "\n");
+        
+        // Ejecutar el algoritmo
+        colocarAntenas(casas, r);
+    }
+}
