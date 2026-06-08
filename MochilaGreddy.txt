@@ -1,0 +1,97 @@
+import java.util.Scanner;
+import java.util.Arrays;
+import java.util.Comparator;
+class Objeto {
+    String nombre;
+    double valor;
+    double peso;
+
+    public Objeto(String nombre, double valor, double peso) {
+        this.nombre = nombre;
+        this.valor = valor;
+        this.peso = peso;
+    }
+}
+public class Main
+{
+    // Método principal que ejecuta la estrategia Greedy
+    public static void llenarMochila(Objeto[] objetos, double capacidadMaxima) {
+        // 1. Ordenar los objetos por su relación (valor/peso) en orden descendente
+        Arrays.sort(objetos, new Comparator<Objeto>() {
+            @Override
+            public int compare(Objeto o1, Objeto o2) {
+                double proporcion1 = o1.valor / o1.peso;
+                double proporcion2 = o2.valor / o2.peso;
+                // Orden descendente
+                return Double.compare(proporcion2, proporcion1);
+            }
+        });
+
+        double valorTotal = 0.0;
+        double capacidadRestante = capacidadMaxima;
+
+        System.out.println("--- Detalles de los objetos seleccionados ---");
+
+        // 2. Iterar sobre los objetos ordenados
+        for (Objeto obj : objetos) {
+            if (capacidadRestante == 0) {
+                break; // La mochila está llena
+            }
+
+            if (obj.peso <= capacidadRestante) {
+                // Si el objeto cabe completo, lo tomamos al 100%
+                capacidadRestante -= obj.peso;
+                valorTotal += obj.valor;
+                System.out.printf("Objeto: %s | Fracción utilizada: 1.0 (100%%) | Valor sumado: %.2f | Peso sumado: %.2f\n", 
+                                  obj.nombre, obj.valor, obj.peso);
+            } else {
+                // Si el objeto no cabe completo, tomamos solo una fracción
+                double fraccion = capacidadRestante / obj.peso;
+                double valorFraccional = obj.valor * fraccion;
+                
+                valorTotal += valorFraccional;
+                System.out.printf("Objeto: %s | Fracción utilizada: %.2f (%.2f%%) | Valor sumado: %.2f | Peso sumado: %.2f\n", 
+                                  obj.nombre, fraccion, fraccion * 100, valorFraccional, capacidadRestante);
+                
+                // La mochila se llena tras tomar la fracción
+                capacidadRestante = 0; 
+            }
+        }
+
+        // 3. Mostrar el valor total obtenido
+        System.out.println("---------------------------------------------");
+        System.out.printf("Valor TOTAL obtenido: %.2f\n", valorTotal);
+    }
+    
+	public static void main(String[] args) {
+	    Scanner scanner = new Scanner(System.in);
+	     System.out.println("Cuantos objetos va a crear?");
+	     int c = 0;
+	     c= scanner.nextInt();
+	     Objeto[] objetos=new Objeto[c];
+	     String name="";
+	     int valor=0;
+	     int peso=0;
+	     System.out.println("Ingrese el Nombre, Valor y peso del item(en ese orden)");
+	     for (int i=0;i<c ;i++ ){
+	         System.out.println("Item "+(i+1));
+	         //name=scanner.next();
+	         
+	         objetos[i]= new Objeto(scanner.next(), scanner.nextInt(), scanner.nextInt());
+	     } 
+		/*Objeto[] objetos = {
+            new Objeto("A", 60, 10),
+            new Objeto("B", 100, 20),
+            new Objeto("C", 120, 30)
+        };*/
+
+        // Capacidad máxima de la mochila
+        double capacidadMochila = 50;
+        System.out.println("Capacidad de la mochila?");
+        System.out.println("Capacidad máxima de la mochila: " + scanner.nextInt() + " kg\n");
+        
+        scanner.close();
+        // Ejecutar el algoritmo
+        llenarMochila(objetos, capacidadMochila);
+	}
+}
